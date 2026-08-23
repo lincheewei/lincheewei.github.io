@@ -1,0 +1,705 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>猫卜 · 闭测邀请函</title>
+<!--
+  设计说明：这是一张「请柬」，刻意只有一种夜色——它就是 app 的世界，
+  不做浅色主题（letterpress-invitation 式的单一视觉承诺）。
+-->
+<style>
+  :root {
+    --ink: #0A0A13;
+    --ink-deep: #05050B;
+    --ink-raised: #141421;
+    --gold: #DAAF67;
+    --gold-bright: #F6E1AD;
+    --gold-deep: #9E7A48;
+    --bone: #EDE8DB;
+    --bone-muted: rgba(237, 232, 219, 0.62);
+    --bone-faint: rgba(237, 232, 219, 0.38);
+    --moonlight: #9FB6D9;
+    --serif-zh: "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC", serif;
+    --serif-latin: "Cochin", "Palatino", "Times New Roman", serif;
+  }
+
+  html { background: var(--ink-deep); }
+  body {
+    margin: 0;
+    font-family: var(--serif-zh);
+    color: var(--bone);
+    background:
+      radial-gradient(120% 60% at 50% 0%, #191928 0%, var(--ink) 55%, var(--ink-deep) 100%);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  #sky {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .card {
+    position: relative;
+    z-index: 1;
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 56px 28px 72px;
+  }
+
+  /* 请柬内框：双线鎏金 */
+  .frame {
+    border: 1px solid rgba(218, 175, 103, 0.5);
+    outline: 1px solid rgba(218, 175, 103, 0.18);
+    outline-offset: 5px;
+    padding: 52px 30px 56px;
+    background: linear-gradient(160deg, rgba(20, 20, 33, 0.55), rgba(10, 10, 19, 0.2));
+  }
+
+  .crest { display: flex; justify-content: center; margin-bottom: 26px; }
+  .crest svg { width: 168px; height: 168px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .crest .ring-spin {
+      animation: spin 90s linear infinite;
+      transform-origin: 50% 50%;
+    }
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .eyebrow {
+    font-family: var(--serif-latin);
+    font-size: 11px;
+    letter-spacing: 0.5em;
+    text-indent: 0.5em;   /* 平衡末字距 */
+    color: var(--bone-faint);
+    text-align: center;
+    margin: 0 0 14px;
+    text-transform: uppercase;
+  }
+
+  h1:focus { outline: none; }
+  h1 {
+    font-size: 52px;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    text-indent: 0.28em;
+    text-align: center;
+    margin: 0 0 6px;
+    background: linear-gradient(105deg, var(--gold-bright) 15%, var(--gold) 45%, var(--gold-deep) 75%, var(--gold) 95%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 34px 0;
+  }
+  .divider::before,
+  .divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(218, 175, 103, 0.45));
+  }
+  .divider::after {
+    background: linear-gradient(90deg, rgba(218, 175, 103, 0.45), transparent);
+  }
+  .divider .gem {
+    width: 7px;
+    height: 7px;
+    background: var(--gold);
+    transform: rotate(45deg);
+  }
+  .divider .label {
+    font-size: 13px;
+    letter-spacing: 0.45em;
+    text-indent: 0.45em;
+    color: var(--gold);
+    white-space: nowrap;
+  }
+
+  .greeting {
+    text-align: center;
+    font-size: 16px;
+    line-height: 2.1;
+    color: var(--bone);
+    margin: 0;
+  }
+  .greeting em {
+    font-style: normal;
+    color: var(--gold-bright);
+  }
+
+  p.body {
+    font-size: 15px;
+    line-height: 2.05;
+    color: var(--bone-muted);
+    margin: 0 0 1.2em;
+    text-align: justify;
+  }
+  p.body strong { color: var(--bone); font-weight: 600; }
+
+  /* 理念印章行 */
+  .seals {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .seals span {
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    text-indent: 0.2em;
+    color: var(--gold);
+    border: 1px solid rgba(218, 175, 103, 0.35);
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: rgba(218, 175, 103, 0.06);
+  }
+
+  /* 你会遇到 */
+  .meets {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 22px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (max-width: 480px) { .meets { grid-template-columns: 1fr; } }
+  .meets li {
+    padding-left: 16px;
+    position: relative;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--bone-muted);
+  }
+  .meets li::before {
+    content: "✦";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--gold);
+    font-size: 11px;
+  }
+  .meets b {
+    display: block;
+    font-size: 15px;
+    color: var(--bone);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+
+  /* 安装三步：真实顺序，数字有信息 */
+  .steps { display: grid; gap: 18px; counter-reset: step; margin: 0; padding: 0; list-style: none; }
+  .steps li {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  .steps .num {
+    counter-increment: step;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(218, 175, 103, 0.55);
+    display: grid;
+    place-items: center;
+    font-family: var(--serif-latin);
+    font-size: 17px;
+    color: var(--gold-bright);
+    background: rgba(218, 175, 103, 0.07);
+  }
+  .steps .num::before { content: counter(step); }
+  .steps b {
+    display: block;
+    font-size: 15.5px;
+    color: var(--bone);
+    letter-spacing: 0.05em;
+    margin-bottom: 3px;
+  }
+  .steps p { margin: 0; font-size: 13.5px; line-height: 1.9; color: var(--bone-muted); }
+  .steps p code {
+    font-family: var(--serif-latin);
+    color: var(--moonlight);
+    font-size: 13px;
+  }
+
+  /* 二维码祭坛 */
+  .qr-altar {
+    margin: 10px auto 0;
+    width: fit-content;
+    text-align: center;
+  }
+  .qr-altar .plate {
+    padding: 20px;
+    border: 1px solid rgba(218, 175, 103, 0.5);
+    outline: 1px solid rgba(218, 175, 103, 0.16);
+    outline-offset: 4px;
+    background: var(--ink-deep);
+    display: inline-block;
+  }
+  .qr-altar img {
+    display: block;
+    width: 172px;
+    height: 172px;
+    image-rendering: pixelated;
+  }
+  .qr-altar figcaption {
+    margin-top: 14px;
+    font-size: 12.5px;
+    letter-spacing: 0.3em;
+    text-indent: 0.3em;
+    color: var(--bone-faint);
+  }
+
+  .note {
+    margin: 26px 0 0;
+    font-size: 13px;
+    line-height: 1.95;
+    color: var(--bone-faint);
+    text-align: center;
+  }
+  .note b { color: var(--gold); font-weight: 600; }
+
+  footer {
+    margin-top: 46px;
+    text-align: center;
+  }
+  footer .motto {
+    font-size: 15px;
+    letter-spacing: 0.3em;
+    text-indent: 0.3em;
+    color: var(--gold);
+    margin: 0 0 10px;
+  }
+  footer .fine {
+    font-size: 11.5px;
+    letter-spacing: 0.18em;
+    color: var(--bone-faint);
+    line-height: 2;
+    margin: 0;
+  }
+
+  a { color: var(--moonlight); }
+
+  /* ====== 魔法信封：启封之前，请柬睡在信封里 ====== */
+  /* JS 在 <html> 上加 .sealed；无 JS 时信封不出现、内容直接可读 */
+  #envelope-scene { display: none; }
+  html.sealed #envelope-scene {
+    display: grid;
+    place-items: center;
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    transition: opacity 0.7s ease;
+  }
+  html.revealed #envelope-scene { opacity: 0; pointer-events: none; }
+  html.done #envelope-scene { display: none; }
+
+  html.sealed:not(.revealed) { overflow: hidden; }
+  html.sealed:not(.revealed) .card { visibility: hidden; }
+  html.revealed .card { animation: letter-rise 0.9s ease both; }
+  @keyframes letter-rise {
+    from { opacity: 0; transform: translateY(26px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .envelope-wrap { perspective: 1300px; text-align: center; }
+  .envelope {
+    position: relative;
+    display: block;
+    width: min(86vw, 430px);
+    aspect-ratio: 3 / 2;
+    margin: 0 auto;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    -webkit-tap-highlight-color: transparent;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .envelope { animation: env-float 6s ease-in-out infinite; }
+    @keyframes env-float { 50% { transform: translateY(-7px); } }
+    html.opening .envelope { animation: none; }
+  }
+
+  /* 信封各层：底 → 信纸 → 前袋 → 翻盖 → 封蜡 */
+  .env-back, .env-front {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(165deg, #1A1A2B, #0E0E1A);
+    border: 1px solid rgba(218, 175, 103, 0.55);
+  }
+  .env-back { z-index: 1; }
+  .env-front { z-index: 3; outline: 1px solid rgba(218, 175, 103, 0.16); outline-offset: 4px; }
+  /* 前袋 V 折线 */
+  .env-front::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to bottom right, transparent 49.6%, rgba(218,175,103,0.28) 49.9%, transparent 50.4%) top left / 50.2% 100% no-repeat,
+      linear-gradient(to bottom left, transparent 49.6%, rgba(218,175,103,0.28) 49.9%, transparent 50.4%) top right / 50.2% 100% no-repeat;
+  }
+  .env-address {
+    position: absolute;
+    z-index: 4;
+    left: 0; right: 0; bottom: 5.5%;
+    display: block;
+    pointer-events: none;
+  }
+  .env-address i {
+    display: block;
+    font-style: normal;
+    font-family: var(--serif-latin);
+    font-size: 9.5px;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: var(--bone-faint);
+    margin-bottom: 8px;
+  }
+  .env-address em {
+    display: block;
+    font-style: normal;
+    font-size: 16.5px;
+    letter-spacing: 0.24em;
+    color: var(--bone);
+  }
+  .env-address b {
+    display: block;
+    margin-top: 9px;
+    font-weight: 400;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+  }
+
+  /* 信纸：藏在前袋后，启封时抽出 */
+  .env-letter {
+    position: absolute;
+    z-index: 2;
+    left: 7%; right: 7%;
+    top: 9%; height: 84%;
+    background: linear-gradient(175deg, #F2EDDF, #DDD5C2);
+    border: 1px solid rgba(158, 122, 72, 0.65);
+    transition: transform 0.85s cubic-bezier(0.22, 0.9, 0.3, 1) 0.55s;
+  }
+  .env-letter::before {
+    content: "✦";
+    position: absolute;
+    top: 9%;
+    left: 50%;
+    translate: -50%;
+    color: #9E7A48;
+    font-size: 13px;
+  }
+  .env-letter::after {
+    content: "";
+    position: absolute;
+    left: 18%; right: 18%; top: 30%;
+    height: 38%;
+    background: repeating-linear-gradient(to bottom, rgba(10,10,19,0.34) 0 1px, transparent 1px 12px);
+  }
+  html.opening .env-letter { transform: translateY(-58%); }
+
+  /* 翻盖：顶边为轴向上翻开 */
+  .env-flap {
+    position: absolute;
+    z-index: 5;
+    inset: 0 0 auto 0;
+    height: 54%;
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    background: linear-gradient(180deg, #23233A, #12121F);
+    border-top: 1px solid rgba(218, 175, 103, 0.55);
+    transform-origin: top center;
+    transition: transform 0.7s cubic-bezier(0.55, 0, 0.3, 1);
+  }
+  .env-flap::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    background: linear-gradient(to bottom right, transparent 49.7%, rgba(218,175,103,0.4) 50%, transparent 50.5%) top left / 50.15% 100% no-repeat,
+                linear-gradient(to bottom left, transparent 49.7%, rgba(218,175,103,0.4) 50%, transparent 50.5%) top right / 50.15% 100% no-repeat;
+  }
+  html.opening .env-flap { transform: rotateX(176deg); z-index: 1; }
+
+  /* 封蜡：鎏金爪印 */
+  .env-seal {
+    position: absolute;
+    z-index: 6;
+    left: 50%; top: 54%;
+    width: 82px; height: 82px;
+    translate: -50% -50%;
+    filter: drop-shadow(0 3px 10px rgba(218, 175, 103, 0.35));
+    transition: transform 0.45s ease, opacity 0.45s ease;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .env-seal { animation: seal-breathe 3s ease-in-out infinite; }
+    @keyframes seal-breathe {
+      50% { filter: drop-shadow(0 3px 18px rgba(246, 225, 173, 0.6)); }
+    }
+  }
+  html.opening .env-seal {
+    transform: scale(1.3) rotate(8deg);
+    opacity: 0;
+    animation: none;
+  }
+
+  .open-hint {
+    margin: 26px 0 0;
+    font-size: 13px;
+    letter-spacing: 0.5em;
+    text-indent: 0.5em;
+    color: var(--gold);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .open-hint { animation: hint-pulse 2.6s ease-in-out infinite; }
+    @keyframes hint-pulse { 50% { opacity: 0.45; } }
+  }
+  html.opening .open-hint { opacity: 0; transition: opacity 0.4s; }
+</style>
+
+<canvas id="sky" aria-hidden="true"></canvas>
+
+<script>
+  // 尽早封印：JS 可用才有信封；无 JS 直接读信
+  document.documentElement.classList.add('sealed');
+</script>
+
+<!-- 魔法信封：与月影学院请柬同一套礼数——先启封，再读信 -->
+<div id="envelope-scene">
+  <div class="envelope-wrap">
+    <button class="envelope" id="unseal-btn" aria-label="启封邀请函">
+      <span class="env-back" aria-hidden="true"></span>
+      <span class="env-letter" aria-hidden="true"></span>
+      <span class="env-front" aria-hidden="true"></span>
+      <span class="env-address" aria-hidden="true">
+        <i>Meowracle · Invitation</i>
+        <em>致　将要推开这扇门的你</em>
+        <b>猫 卜 谨 呈</b>
+      </span>
+      <span class="env-flap" aria-hidden="true"></span>
+      <span class="env-seal" aria-hidden="true">
+        <svg viewBox="0 0 82 82" role="presentation">
+          <defs>
+            <radialGradient id="wax" cx="38%" cy="32%" r="80%">
+              <stop offset="0%" stop-color="#F6E1AD"/>
+              <stop offset="55%" stop-color="#DAAF67"/>
+              <stop offset="100%" stop-color="#9E7A48"/>
+            </radialGradient>
+          </defs>
+          <!-- 封蜡的不规则边 -->
+          <path fill="url(#wax)" d="M41 3c6-2 12 2 17 4s13 1 16 7-1 12 1 18-4 12-3 18-7 10-11 14-10 3-16 5-12 3-17-1-10-6-13-11-7-9-7-15 2-12 3-18 0-13 5-17 9-3 15-4 6 2 10 0z"/>
+          <circle cx="41" cy="41" r="27" fill="none" stroke="#0A0A13" stroke-opacity="0.35" stroke-width="1"/>
+          <!-- 爪印 -->
+          <g fill="#0A0A13" opacity="0.82">
+            <ellipse cx="30" cy="32" rx="4.6" ry="5.8" transform="rotate(-14 30 32)"/>
+            <ellipse cx="41" cy="29" rx="4.6" ry="6"/>
+            <ellipse cx="52" cy="32" rx="4.6" ry="5.8" transform="rotate(14 52 32)"/>
+            <path d="M41 38.5c8 0 12.6 5.2 12.6 10.4 0 4.6-3.9 7.3-7.3 5.7-2.3-1-3-1.6-5.3-1.6s-3 .6-5.3 1.6c-3.4 1.6-7.3-1.1-7.3-5.7 0-5.2 4.6-10.4 12.6-10.4z"/>
+          </g>
+        </svg>
+      </span>
+    </button>
+    <p class="open-hint">轻 触 启 封</p>
+  </div>
+</div>
+
+<main class="card">
+  <div class="frame">
+    <div class="crest" aria-hidden="true">
+      <!-- 纹章：刻度鎏金环 + 望月的灵猫（与 app 内同一条剪影曲线） -->
+      <svg viewBox="0 0 200 200" role="img" aria-label="猫卜纹章">
+        <g class="ring-spin" fill="none" stroke="#DAAF67">
+          <circle cx="100" cy="100" r="94" stroke-width="1.6"/>
+          <circle cx="100" cy="100" r="86" stroke-width="0.6" opacity="0.5"/>
+          <g stroke-width="1" opacity="0.8">
+            <line x1="100" y1="6"  x2="100" y2="16"/>
+            <line x1="100" y1="184" x2="100" y2="194"/>
+            <line x1="6"  y1="100" x2="16" y2="100"/>
+            <line x1="184" y1="100" x2="194" y2="100"/>
+            <line x1="33.5" y1="33.5" x2="40.6" y2="40.6"/>
+            <line x1="159.4" y1="159.4" x2="166.5" y2="166.5"/>
+            <line x1="33.5" y1="166.5" x2="40.6" y2="159.4"/>
+            <line x1="159.4" y1="40.6" x2="166.5" y2="33.5"/>
+          </g>
+        </g>
+        <!-- 月牙 -->
+        <path d="M 138 52 A 20 20 0 1 0 152 86 A 16 16 0 1 1 138 52 Z" fill="#F6E1AD" opacity="0.95"/>
+        <!-- 灵猫（坐姿，仰望） -->
+        <g transform="translate(52 66) scale(0.95)">
+          <path fill="#DAAF67"
+            d="M 24 92 C 10 68 29 28 44 24 L 42 8 L 55 19 Q 59 13 63 13 L 68 29 Q 74 42 62 47 Q 58 70 68 92 Z
+               M 60 90 Q 96 94 90 66 Q 86 60 84 62 Q 88 84 66 84 Z"/>
+          <path d="M 50 23.5 Q 54 20.5 58 23.5" stroke="#0A0A13" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <g fill="#0A0A13">
+            <circle cx="40" cy="44" r="1.8"/>
+            <circle cx="47" cy="58" r="1.8"/>
+            <circle cx="38" cy="70" r="1.8"/>
+          </g>
+          <path d="M 40 44 L 47 58 L 38 70" stroke="#0A0A13" stroke-width="1" fill="none" opacity="0.85"/>
+        </g>
+      </svg>
+    </div>
+
+    <p class="eyebrow">Meowracle · Closed Beta</p>
+    <h1>猫卜</h1>
+    <p class="eyebrow" style="margin-top:10px">灵 猫 塔 罗 · 闭 测 邀 请 函</p>
+
+    <div class="divider"><span class="gem"></span></div>
+
+    <p class="greeting">
+      亲爱的朋友——<br>
+      我做了一只住在手机里的<em>灵猫</em>，它会陪你抽牌、替你解牌、<br>
+      守着你每天的运势。现在，<em>敬邀你成为第一批推开这扇门的人</em>。
+    </p>
+
+    <div class="divider"><span class="label">这 是 什 么</span></div>
+
+    <p class="body">
+      <strong>猫卜</strong>是一座全中文的沉浸式塔罗小世界。进门先经一场「诞生仪式」：回答五个问心之题，星空里会有一只灵猫认出你——焰尾的烈、湖眼的柔、石心的直、云步的俏、星语的玄，五种性格五种声线，往后每一句解读都由它开口。
+    </p>
+    <p class="body">
+      牌面是 1909 年韦特-史密斯塔罗的公有领域原作，经程序重新上墨成夜金色；主页的月亮按真实天文算法长成今晚的形状；以指画一个圆，法阵应手而亮，牌从阵心升起。
+    </p>
+
+    <div class="divider"><span class="label">理 念</span></div>
+
+    <div class="seals">
+      <span>神秘而治愈</span>
+      <span>零服务器</span>
+      <span>零账号</span>
+      <span>数据全在你手机</span>
+      <span>不收一分钱</span>
+    </div>
+
+    <div class="divider"><span class="label">你 会 遇 到</span></div>
+
+    <ul class="meets">
+      <li><b>灵猫相伴</b>喂星尘、涨羁绊、改名礼，它会记得你来过的每一天</li>
+      <li><b>羁绊养成</b>陪伴日久，灵猫会晋阶、通灵、长出星尘光环，还带着今天的心情</li>
+      <li><b>今日一牌</b>抽了牌才解封五维运势——牌的花色真实加持对应运势</li>
+      <li><b>专属牌阵</b>爱情、事业、财运、抉择……不同的心事，落进不同的牌阵</li>
+      <li><b>解牌剧场</b>灵猫走到牌阵前，按它的性格逐张讲给你听，爪印盖章</li>
+      <li><b>牌灵觉醒</b>一张牌三十天里反复来找你，它会「醒」，得一个只属于你的名字</li>
+      <li><b>牌库关系馆</b>七十八张牌不是图鉴，是你与它们相遇、觉醒、结缘的记录</li>
+      <li><b>月影学院</b>四幕真实塔罗史 + 三试一操，宣誓授证成为持证塔罗师</li>
+      <li><b>双机塔罗桌</b>两台 iPhone 面对面开桌：你抽牌，塔罗师实时解读</li>
+      <li><b>灵猫夜游</b>派它夜游，叼回三十种奇物——公开保底，绝无暗池</li>
+    </ul>
+
+    <div class="divider"><span class="label">三 步 入 座</span></div>
+
+    <ol class="steps">
+      <li>
+        <span class="num" aria-hidden="true"></span>
+        <div>
+          <b>扫下方二维码（或点开链接）</b>
+          <p><a href="https://testflight.apple.com/join/P2zCXQQS" style="color:#d9af67">testflight.apple.com/join/P2zCXQQS</a> —— 公开测试链接，点开即入座。</p>
+        </div>
+      </li>
+      <li>
+        <span class="num" aria-hidden="true"></span>
+        <div>
+          <b>没装 TestFlight 会先引导安装</b>
+          <p>Apple 官方的测试应用（免费）。装好后回到链接再点一次。</p>
+        </div>
+      </li>
+      <li>
+        <span class="num" aria-hidden="true"></span>
+        <div>
+          <b>点「安装」，猫卜就到手了</b>
+          <p>之后每次更新 TestFlight 会自动提醒你。</p>
+        </div>
+      </li>
+    </ol>
+
+    <figure class="qr-altar">
+      <div class="plate">
+        <img alt="TestFlight 公测二维码" width="172" height="172"
+             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGAQMAAACzVW0eAAAABlBMVEUrIxPw+P9IYhZ3AAABRElEQVR42u1YyQ3DMAwT6gE8klfPSBnAgEqKzvFJgX4KPmoYQRx/CEqkpEQ+rBn/m483e2C1PVpuje+D5xjzFU/rVzfANoARqBLYCG80nHcXbGCp8MQEXZ04mxU2xjR1tMOGsAJb39x4ywKmNIueTvkmnY5zG+lUS/IsnS53Mcm3vmFnWdxk7vHpwhvNLW/fhku+IXyV/2RsL9I6BOsRU4JhQGcZiLYTb5viCNJ0bC5aKMdQWOW9zD0T3sAVdKqCVZFlK+LivcyuVa3GDB3TBlvIcufFnolOq3ljgxR0YEmj+9SF1R3NSj+1JS4eEivN1PqqLTHRqRo2VtVj+fCmkqrut0zYZ5ZZc1Yec1bz0eltzoqyOLUlVvMCS/w1onrNWXqR0aXZDAidtrPum81ZxwQ9jGrWOWcd9VStr5G//f9kfXfzBhSE3oENXo8OAAAAAElFTkSuQmCC">
+      </div>
+      <figcaption>扫 码 入 座 · 公 测 直 达</figcaption>
+    </figure>
+
+    <p class="note">
+      测试时想到什么都可以直接找我说；在 TestFlight 里<b>截图 → 分享 → 发送 Beta 反馈</b>，会连着截图一起送到我这儿。<br>
+      双机塔罗桌需要两台 iPhone 靠近，首次连接请允许「本地网络」权限。
+    </p>
+
+    <footer>
+      <div class="divider"><span class="gem"></span></div>
+      <p class="motto">以牌为镜 · 以心为灯</p>
+      <p class="fine">猫卜 MEOWRACLE · 闭测第一批<br>牌面 Rider–Waite–Smith，1909，公有领域 · 你的数据只属于你</p>
+    </footer>
+  </div>
+</main>
+
+<script>
+  // 星空：静态撒点，仅两颗星缓慢呼吸（尊重 reduced-motion 则完全静止）
+  const canvas = document.getElementById('sky');
+  const ctx = canvas.getContext('2d');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let stars = [];
+
+  function seed() {
+    const w = canvas.width = innerWidth * devicePixelRatio;
+    const h = canvas.height = innerHeight * devicePixelRatio;
+    canvas.style.width = innerWidth + 'px';
+    canvas.style.height = innerHeight + 'px';
+    stars = Array.from({ length: 90 }, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: (Math.random() * 1.1 + 0.35) * devicePixelRatio,
+      a: Math.random() * 0.5 + 0.12,
+      tw: Math.random() * Math.PI * 2,
+    }));
+  }
+
+  function draw(t) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (const s of stars) {
+      const breathe = reduce ? 1 : 0.75 + 0.25 * Math.sin(t / 2400 + s.tw);
+      ctx.globalAlpha = s.a * breathe;
+      ctx.fillStyle = '#EDE8DB';
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    if (!reduce) requestAnimationFrame(draw);
+  }
+
+  addEventListener('resize', () => { seed(); if (reduce) draw(0); });
+  seed();
+  reduce ? draw(0) : requestAnimationFrame(draw);
+
+  // ====== 启封仪式：封蜡碎 → 翻盖开 → 信纸探出 → 信笺展开 ======
+  const root = document.documentElement;
+  const unsealBtn = document.getElementById('unseal-btn');
+
+  function unseal() {
+    if (root.classList.contains('opening')) return;
+    root.classList.add('opening');
+    // 减少动态：跳过翻盖动画，直接展信
+    const flapTime = reduce ? 0 : 1350;
+    const fadeTime = reduce ? 0 : 700;
+    setTimeout(() => {
+      root.classList.add('revealed');
+      scrollTo(0, 0);
+      setTimeout(() => {
+        root.classList.add('done');
+        const h1 = document.querySelector('h1');
+        if (h1) { h1.setAttribute('tabindex', '-1'); h1.focus({ preventScroll: true }); }
+      }, fadeTime);
+    }, flapTime);
+  }
+
+  unsealBtn.addEventListener('click', unseal);
+</script>
